@@ -1,0 +1,5 @@
+crawlers/settings.py
+*.pyc
+__pycache__
+*.egg-info
+venv
