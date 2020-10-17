@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import scrapy
 
-from test_proj.items import HabrPostItem
+from crawlers.items import HabrPostItem
 
 
 class HabrSpider(scrapy.Spider):

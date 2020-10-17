@@ -7,4 +7,3 @@
 Optionally you can also use `scrapy crawl habr --output=data.json` for writing result to data.json file
 or `scrapy crawl habr -L WARNING` to ignore scrapy debug messages.
 Also, one can run this script from `cron` for 24/7 monitoring.
-

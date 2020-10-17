@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Infoportal</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+
+<body>
+
+    <!-- Heap -->
+    <div style="
+            background-color: #0f204e !important;
+            background: #495931 url('https://vka.mil.ru/media/mil/img/page_bg1.png') 50% 30% no-repeat;
+            height: 140px;
+            ">
+        <div class="container d-flex justify-content-around">
+            <div class="row align-items-center mt-3">
+                <img src="https://vka.mil.ru/media/mil/img/emblem.png">
+                <div class="ml-2" style="color: white; font-size: 24px;">Министерство обороны<br>Российской Федерации</div>
+            </div>
+
+            <div class="row align-items-center mt-3">
+                <img src="https://vka.mil.ru/upload/site5/emblem-vka_90.png">
+                <div class="ml-2" style="color: white; font-size: 24px;">Военно-космическая академия<br>имени А.Ф.Можайского</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    {% csrf_token %}
+    <div id="filters"
+        style="
+            background-color: #ec1908;
+            height: 120px;
+        ">
+        <div class="container d-flex justify-content-around">
+            <div class="col-3 mt-3">
+                <label for="source" style="color: white; font-weight: 600;">Источник:</label>
+                <select class="form-control" id="source" v-model="source" @change="get_posts">
+                    <option>habr.com</option>
+                    <option>anti-malware.ru</option>
+                    <option>bi.zone</option>
+                    <option>fstec.ru</option>
+                    <option>securitylab.ru</option>
+                    <option>itsec.ru</option>
+                    <option>kaspersky.ru</option>
+                </select>
+            </div>
+
+            <div class="col-3 mt-3">
+                <label for="date" style="color: white; font-weight: 600;">Дата:</label>
+                    <input class="form-control" id="date" v-model="date" @keyup.enter="get_posts">
+            </div>
+
+            <div class="col-3 mt-3">
+                <label for="theme" style="color: white; font-weight: 600;">Тематика:</label>
+                <input class="form-control" id="theme" v-model="category" @keyup.enter="get_posts">
+            </div>
+        </div>
+    </div>
+
+    <!-- News -->
+    <div class="container">
+        <div id="app">
+            <div class="mt-1 p-2" v-for="post in posts"
+                style="border-bottom: #0f204e 1px solid;">
+                <div class="post-date"
+                    style="
+                        font-size: 14px;
+                        color: black; 
+                        font-weight: 300;
+                        ">[[ post.posted ]]</div>
+                <div class="post-title"
+                    style="
+                        font-size: 18px;
+                        color: black; 
+                        font-weight: 700;
+                        ">[[ post.title ]]</div>
+                <div class="post-text pl-3 mt-1"
+                    style="
+                        font-size: 16px;
+                        color: #131313; 
+                        font-weight: 400;
+                        font-family: 'Open Sans', sans-serif;
+                        ">[[ post.link ]]</div>
+                <div class="post-source mt-1 pl-3">habre.com</div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script>
+       Vue.options.delimiters = ['[[', ']]'];
+       
+       var app = new Vue({
+           el: '#app',
+
+           data: {
+               posts: []
+            }
+        })
+
+        var filters = new Vue({
+            el: '#filters',
+
+            data: {
+                source: 'habr.com',
+                date: 'сегодня',
+                category: 'все'
+            },
+
+            created: function() {
+                this.get_posts();
+            },
+
+            methods: {
+                get_posts() {
+                    axios({
+                    method: 'post',
+                    url: "./filter-changed", 
+                    data: {
+                        source: this.source,
+                        date: this.date,
+                        category: this.category
+                    }
+                })
+                .then((response) => {
+                        app.posts = response.data;
+                    });
+                }
+            }
+        })
+    </script>
+    
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

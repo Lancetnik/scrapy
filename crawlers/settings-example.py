@@ -1,14 +1,14 @@
-BOT_NAME = 'test_proj'
+BOT_NAME = 'crawlers'
 
-SPIDER_MODULES = ['test_proj.spiders']
-NEWSPIDER_MODULE = 'test_proj.spiders'
+SPIDER_MODULES = ['crawlers.spiders']
+NEWSPIDER_MODULE = 'crawlers.spiders'
 
 FEED_EXPORT_ENCODING = 'utf-8'
 
 ROBOTSTXT_OBEY = True
 
 ITEM_PIPELINES = {
-   'test_proj.pipelines.PostgresPipeline': 100,
+   'crawlers.pipelines.PostgresPipeline': 100,
 }
 
 DB_HOST = ''

@@ -3,3 +3,4 @@ crawlers/settings.py
 __pycache__
 *.egg-info
 venv
+website/website/settings.py
