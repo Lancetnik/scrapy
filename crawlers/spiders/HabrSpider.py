@@ -48,7 +48,7 @@ class HabrSpider(CrawlSpider):
             now = datetime.now()
             Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
         
-        Item['text'] = ''.join(response.css('div.post__text-html::text').getall())
+        Item['text'] = ''.join(response.css('div.post__text::text').getall())
 
         yield Item
 
