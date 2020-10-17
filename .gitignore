@@ -4,3 +4,5 @@ __pycache__
 *.egg-info
 venv
 website/website/settings.py
+crawlers/posts/*
+crawlers/logs/*

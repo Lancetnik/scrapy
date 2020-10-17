@@ -10,3 +10,4 @@ class HabrPostItem(Item):
     comments = Field()
     datetime = Field()
     posted = Field()
+    text = Field()

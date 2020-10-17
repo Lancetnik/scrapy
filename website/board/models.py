@@ -55,7 +55,6 @@ class HabrPost:
     @staticmethod
     def posts_maker(data: list):
         for post in data:
-            print(post)
             yield HabrPost(
                 post[0], post[1], post[2],
                 post[3], post[4], post[5],

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from loguru import logger
 import scrapy
 
 from crawlers.items import HabrPostItem
@@ -38,6 +39,9 @@ class HabrSpider(scrapy.Spider):
                     posted = posted.replace('сегодня в ', '').split(':')
                     now = datetime.now()
                     Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
+
+                yield scrapy.Request(url=Item['link'], callback=self.parse)
+                Item['text'] = ''.join(response.css('div.post__text-html::text').getall())
 
                 yield Item
 
