@@ -2,48 +2,53 @@ from datetime import datetime, timedelta
 
 from loguru import logger
 import scrapy
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
 
 from crawlers.items import HabrPostItem
 
 
-class HabrSpider(scrapy.Spider):
+class HabrSpider(CrawlSpider):
     name = 'habr'
+    allowed_domains = ['habr.com']
 
-    start_urls = ['https://habr.com/ru/']
 
-    def parse(self, response):
-        for post in response.css('li.content-list__item_post'):
-            post_title = post.css('a.post__title_link')
-            if post_title:
-                Item = HabrPostItem()
-                Item['title'] = post_title.css('::text').get()
-                Item['link'] = post_title.css('::attr(href)').get()
+    def start_requests(self):
+        yield scrapy.Request(url='https://habr.com/ru/')
 
-                Item['likes'] = int(post.css('span.post-stats__result-counter::text').get().lstrip('+'))
-                Item['bookmarks'] = int(post.css('span.bookmark__counter::text').get())
+    rules = (
+        Rule(LinkExtractor(restrict_css ='a.toggle-menu__item-link_pagination'), follow=True),
+        Rule(LinkExtractor(restrict_xpaths="//h2[@class='post__title']/a"), follow=True, callback='parse_item'),
+    )
 
-                views = post.css('span.post-stats__views-count::text').get()
-                Item['views'] = int(float(views.replace('k', '').replace(',', '.')) * 1000) if 'k' in views else int(views)
+    def parse_item(self, response):
+        Item = HabrPostItem()
 
-                Item['comments'] = int(post.css('span.post-stats__comments-count::text').get() or 0)
+        Item['title'] = response.css('span.post__title-text::text').get()
+        Item['link'] = response.url
 
-                Item['datetime'] = datetime.now().replace(second=0, microsecond=0)
+        Item['likes'] = int(response.css('span.voting-wjt__counter::text').get().lstrip('+'))
+        Item['bookmarks'] = int(response.css('span.bookmark__counter::text').get())
 
-                posted = post.css('span.post__time::text').get()
-                if 'вчера' in posted:
-                    posted = posted.replace('вчера в ', '').split(':')
-                    now = datetime.now()
-                    yesterday = now - timedelta(days=1)
-                    Item['posted'] = now.replace(day=yesterday.day, hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
-                if 'сегодня' in posted:
-                    posted = posted.replace('сегодня в ', '').split(':')
-                    now = datetime.now()
-                    Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
+        views = response.css('span.post-stats__views-count::text').get()
+        Item['views'] = int(float(views.replace('k', '').replace(',', '.')) * 1000) if 'k' in views else int(views)
 
-                yield scrapy.Request(url=Item['link'], callback=self.parse)
-                Item['text'] = ''.join(response.css('div.post__text-html::text').getall())
+        Item['comments'] = int(response.css('span.post-stats__comments-count::text').get() or 0)
 
-                yield Item
+        Item['datetime'] = datetime.now().replace(second=0, microsecond=0)
 
-        for next_page in response.css('a.toggle-menu__item-link_pagination'):
-            yield response.follow(next_page, self.parse)
+        posted = response.css('span.post__time::text').get()
+        if 'вчера' in posted:
+            posted = posted.replace('вчера в ', '').split(':')
+            now = datetime.now()
+            yesterday = now - timedelta(days=1)
+            Item['posted'] = now.replace(day=yesterday.day, hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
+        if 'сегодня' in posted:
+            posted = posted.replace('сегодня в ', '').split(':')
+            now = datetime.now()
+            Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
+        
+        Item['text'] = ''.join(response.css('div.post__text-html::text').getall())
+
+        yield Item
+

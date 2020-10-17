@@ -28,15 +28,15 @@ class PostgresPipeline():
         )
         link = self.cur.fetchall()
         if not link:
-            # self.cur.execute(
-            #     sql.SQL("insert into {} values(%s, %s, %s, %s, %s, %s, %s, %s)")
-            #     .format(sql.Identifier(spider.name)),
-            #     (
-            #         item['link'], item['title'], [item['likes']], 
-            #         [item['bookmarks']], [item['views']], [item['comments']],
-            #         [item['datetime']], item['posted']
-            #     )
-            # )
+            self.cur.execute(
+                sql.SQL("insert into {} values(%s, %s, %s, %s, %s, %s, %s, %s)")
+                .format(sql.Identifier(spider.name)),
+                (
+                    item['link'], item['title'], [item['likes']], 
+                    [item['bookmarks']], [item['views']], [item['comments']],
+                    [item['datetime']], item['posted']
+                )
+            )
             addr = item["link"].split('/')[-2]
             with open(f'crawlers/posts/{spider.name}/{addr}.txt', 'w', encoding='utf-8') as outfile:
                 outfile.write(item["text"])
