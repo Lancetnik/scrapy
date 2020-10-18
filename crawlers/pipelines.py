@@ -22,37 +22,36 @@ class PostgresPipeline():
     @logger.catch
     def process_item(self, item, spider):
         self.cur.execute(
-            sql.SQL("select * from {} where link = (%s)")
+            sql.SQL("select * from {} where id = (%s)")
                 .format(sql.Identifier(spider.name)),
-                (item['link'], )
+                (item['id'], )
         )
         link = self.cur.fetchall()
         if not link:
             self.cur.execute(
-                sql.SQL("insert into {} values(%s, %s, %s, %s, %s, %s, %s, %s)")
+                sql.SQL("insert into {} values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
                 .format(sql.Identifier(spider.name)),
                 (
-                    item['link'], item['title'], [item['likes']], 
-                    [item['bookmarks']], [item['views']], [item['comments']],
-                    [item['datetime']], item['posted']
+                    item['id'], item['link'], item['title'], item['posted'],
+                    item['tags'], [item['likes']], [item['bookmarks']], [item['views']], 
+                    [item['comments']], [item['datetime']],
                 )
             )
-            addr = item["link"].split('/')[-2]
+            addr = item["id"]
             with open(f'crawlers/posts/{spider.name}/{addr}.txt', 'w', encoding='utf-8') as outfile:
                 outfile.write(item["text"])
         else:
             self.cur.execute(
                 sql.SQL(
-                    "update habr set\
+                    "update {} set\
                      likes = likes || (%(likes)s), bookmarks = bookmarks || (%(bookmarks)s), \
                      views = views || (%(views)s), comments = comments || (%(comments)s), \
                      datetime = datetime || (%(datetime)s) \
-                     where link = (%(link)s) and\
+                     where id = (%(id)s) and\
                      datetime[array_upper(datetime, 1)] <> (%(datetime)s)")
                 .format(sql.Identifier(spider.name)),
                 {
-                    'link': item['link'],
-                    'title': item['title'],
+                    'id': item['id'],
                     'likes': item['likes'],
                     'bookmarks': item['bookmarks'],
                     'views': item['views'],

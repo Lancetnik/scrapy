@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{% load static %}
+
 <head>
     <meta charset="UTF-8">
     <title>Infoportal</title>
 
+    <!-- include VueJS -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js"></script>
     
+    <!-- Include bootstrap & font-awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Include my css -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
 </head>
 
 
@@ -72,77 +79,16 @@
         <div id="app">
             <div class="mt-1 p-2" v-for="post in posts"
                 style="border-bottom: #0f204e 1px solid;">
-                <div class="post-date"
-                    style="
-                        font-size: 14px;
-                        color: black; 
-                        font-weight: 300;
-                        ">[[ post.posted ]]</div>
-                <div class="post-title"
-                    style="
-                        font-size: 18px;
-                        color: black; 
-                        font-weight: 700;
-                        ">[[ post.title ]]</div>
-                <div class="post-text pl-3 mt-1"
-                    style="
-                        font-size: 16px;
-                        color: #131313; 
-                        font-weight: 400;
-                        font-family: 'Open Sans', sans-serif;
-                        ">[[ post.text ]]</div>
-                <a :href="post.link" class="post-source mt-1 pl-3"
-                    style="color: black;
-                    font-weight: 500;"
-                    >Источник: [[ post.link ]]</a>
+                <div class="post-date">[[ post.posted ]]</div>
+                <a class="post-title" :href="'./post?source='+source+'&id='+post.id">[[ post.title ]]</a>
+                <div class="post-text pl-3 mt-1">[[ post.annotation ]]</div>
+                <a :href="post.link" class="post-source mt-1 pl-3">Источник: [[ post.link ]]</a>
             </div>
         </div>
     </div>
-
     
-    <script>
-       Vue.options.delimiters = ['[[', ']]'];
-       
-       var app = new Vue({
-           el: '#app',
-
-           data: {
-               posts: []
-            }
-        })
-
-        var filters = new Vue({
-            el: '#filters',
-
-            data: {
-                source: 'habr.com',
-                date: 'сегодня',
-                category: 'все'
-            },
-
-            created: function() {
-                this.get_posts();
-            },
-
-            methods: {
-                get_posts() {
-                    axios({
-                    method: 'post',
-                    url: "./filter-changed", 
-                    data: {
-                        source: this.source,
-                        date: this.date,
-                        category: this.category
-                    }
-                })
-                .then((response) => {
-                        app.posts = response.data;
-                    });
-                }
-            }
-        })
-    </script>
-    
+    <!-- Include my js -->
+    <script src="{% static '/js/main.js' %}"></script>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

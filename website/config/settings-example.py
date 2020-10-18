@@ -9,12 +9,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
-DB_PASSWORD = ''
-DB_USER = ''
-DB_HOST = ''
-DB_PORT = 5432
-DB_NAME = ''
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,16 +20,10 @@ INSTALLED_APPS = [
     'board',
 ]
 
-DATABASES = {
-    'default':
-        { 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-          'NAME': '',
-          'USER': '',
-          'PASSWORD': '',
-          'HOST': '',
-          'PORT': '5432',
-        }
-}
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    (os.path.join(BASE_DIR, "static")),
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'website.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -65,7 +53,24 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'website.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
+
+
+
+DATABASES = {
+    'default':
+        { 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+          'NAME': '',
+          'USER': '',
+          'PASSWORD': '',
+          'HOST': '',
+          'PORT': '5432',
+        }
+}
+
+
+# Password validation
+# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -82,7 +87,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+
+# Internationalization
+# https://docs.djangoproject.com/en/2.2/topics/i18n/
+
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -91,5 +100,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-STATIC_URL = '/static/'

@@ -27,6 +27,7 @@ class HabrSpider(CrawlSpider):
 
         Item['title'] = response.css('span.post__title-text::text').get()
         Item['link'] = response.url
+        Item['id'] = response.url.split('/')[-2]
 
         Item['likes'] = int(response.css('span.voting-wjt__counter::text').get().lstrip('+'))
         Item['bookmarks'] = int(response.css('span.bookmark__counter::text').get())
@@ -50,6 +51,7 @@ class HabrSpider(CrawlSpider):
             Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
         
         Item['text'] = BS(response.xpath('//*[@id="post-content-body"]').get(), features="lxml").text
+        Item['tags'] = list(set(i.strip() for i in response.css('a.inline-list__item-link::text').getall()))
 
         yield Item
 

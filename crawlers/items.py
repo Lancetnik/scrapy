@@ -2,6 +2,7 @@ from scrapy.item import Item, Field
 
 
 class HabrPostItem(Item):
+    id = Field()
     title = Field()
     link = Field()
     likes = Field()
@@ -11,3 +12,4 @@ class HabrPostItem(Item):
     datetime = Field()
     posted = Field()
     text = Field()
+    tags = Field()

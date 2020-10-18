@@ -1,82 +1,44 @@
-from datetime import datetime, timedelta
-
-from loguru import logger
-import psycopg2
-
-from website.settings import *
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 
 
-def call_db(function):
-    def decor(*args, **kwargs):
-        conn = psycopg2.connect(dbname=DB_NAME, 
-                                user=DB_USER, 
-                                password=DB_PASSWORD, 
-                                host=DB_HOST, 
-                                port=DB_PORT)
-        cur = conn.cursor()
-        
-        rez = function(cur, *args, **kwargs)
-        
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return rez
-    return decor
-
-
-class HabrPost:
-    def __init__(
-            self, link: str, 
-            title="", likes=[], bookmarks=[],
-            views=[], comments=[], datetime=[],
-            posted=datetime(2020, 1, 1), text =""
-        ):
-        self.link = link
-        self.title = title
-        self.likes = likes
-        self.bookmarks = bookmarks
-        self.views = views
-        self.comments = comments
-        self.datetime = datetime
-        self.posted = posted
-        self.text = text
+class Habr(models.Model):
+    id = models.IntegerField(primary_key=True)
+    link = models.TextField()
+    title = models.TextField()
+    posted = models.DateTimeField(blank=True, null=True)
+    tags = ArrayField(models.TextField())
+    likes = ArrayField(models.IntegerField())
+    bookmarks = ArrayField(models.IntegerField())
+    views = ArrayField(models.IntegerField())
+    comments = ArrayField(models.IntegerField())
+    datetime = ArrayField(models.DateTimeField())
 
     def to_dict(self):
-        return {
-            'link': self.link,
-            'title': self.title,
-            'likes': self.likes,
-            'bookmarks': self.bookmarks,
-            'views': self.views,
-            'comments': self.comments, 
-            'datetime': self.datetime,
-            'posted': self.posted,
-            'text': self.text
-        }
+        with open(f"../crawlers/posts/habr/{self.id}.txt", 'r', encoding="utf8") as file:
+            return {
+                'id': self.id,
+                'link': self.link,
+                'title': self.title,
+                'posted': str(self.posted),
+                'tags': self.tags,
+                'likes': self.likes,
+                'bookmarks': self.bookmarks,
+                'comments': self.comments,
+                'datetime': self.datetime,
+                'text': file.read()
+            }
 
-    @staticmethod
-    def posts_maker(data: list):
-        for post in data:
-            addr = post[0].split('/')[-2]
-            with open(f"../crawlers/posts/habr/{addr}.txt", 'r', encoding="utf8") as file:
-                yield HabrPost(
-                    post[0], post[1], post[2],
-                    post[3], post[4], post[5],
-                    post[6], str(post[7]).replace("T", ' '),
-                    file.read()[:300] + "..."
-                ).to_dict()
+    def to_preview(self):
+        with open(f"../crawlers/posts/habr/{self.id}.txt", 'r', encoding="utf8") as file:
+            return {
+                'id': self.id,
+                'link': self.link,
+                'title': self.title,
+                'posted': str(self.posted),
+                'annotation': file.read()[:300]+'...'
+            }
 
-    @staticmethod
-    @call_db
-    def all(cur):
-        cur.execute("select * from habr")
-        result = list(HabrPost.posts_maker(cur.fetchall()))
-        return result
-
-    @staticmethod
-    @call_db
-    def sql(cur, command: str):
-        cur.execute(command)
-        result = cur.fetchall()
-        return result
+    class Meta:
+        managed = False
+        db_table = 'habr'
