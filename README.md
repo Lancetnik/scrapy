@@ -1,6 +1,6 @@
 # Setup
 1. Install python3,  python3-dev, python3-pip
-2. Install scrapy, psycopg2, loguru, django or use `pip3 install -r requirements.txt`
+2. Install scrapy, psycopg2, loguru, django, bs4 or use `pip3 install -r requirements.txt`
 3. Create from crawlers/settings-example.py => crawlers/settings.py with yours DB settings 
 4. From the repository's root run `scrapy crawl habr`
 

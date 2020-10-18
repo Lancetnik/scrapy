@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from bs4 import BeautifulSoup as BS
 from loguru import logger
 import scrapy
 from scrapy.linkextractors import LinkExtractor
@@ -48,7 +49,7 @@ class HabrSpider(CrawlSpider):
             now = datetime.now()
             Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
         
-        Item['text'] = ''.join(response.css('div.post__text::text').getall())
+        Item['text'] = BS(response.xpath('//*[@id="post-content-body"]').get(), features="lxml").text
 
         yield Item
 
