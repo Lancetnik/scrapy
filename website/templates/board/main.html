@@ -91,7 +91,10 @@
                         font-weight: 400;
                         font-family: 'Open Sans', sans-serif;
                         ">[[ post.text ]]</div>
-                <div class="post-source mt-1 pl-3">[[ post.link ]]</div>
+                <a :href="post.link" class="post-source mt-1 pl-3"
+                    style="color: black;
+                    font-weight: 500;"
+                    >Источник: [[ post.link ]]</a>
             </div>
         </div>
     </div>

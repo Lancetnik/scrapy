@@ -6,3 +6,4 @@ venv
 website/website/settings.py
 crawlers/posts/*
 crawlers/logs/*
+website/config/settings.py
