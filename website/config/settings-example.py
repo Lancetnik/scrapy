@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+
     'board',
 ]
 
@@ -55,7 +57,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
+}
 
 DATABASES = {
     'default':
@@ -63,8 +73,8 @@ DATABASES = {
           'NAME': '',
           'USER': '',
           'PASSWORD': '',
-          'HOST': '',
-          'PORT': '5432',
+          'HOST': 'localhost',
+          'PORT': '1488',
         }
 }
 

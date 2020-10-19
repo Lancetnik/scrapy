@@ -51,7 +51,7 @@
         <div class="container d-flex justify-content-around">
             <div class="col-3 mt-3">
                 <label for="source" style="color: white; font-weight: 600;">Источник:</label>
-                <select class="form-control" id="source" v-model="source" @change="get_posts">
+                <select class="form-control" id="source" v-model="source">
                     <option>habr.com</option>
                     <option>anti-malware.ru</option>
                     <option>bi.zone</option>
@@ -64,12 +64,12 @@
 
             <div class="col-3 mt-3">
                 <label for="date" style="color: white; font-weight: 600;">Дата:</label>
-                    <input class="form-control" id="date" v-model="date" @keyup.enter="get_posts">
+                    <input class="form-control" id="date" v-model="date">
             </div>
 
             <div class="col-3 mt-3">
                 <label for="theme" style="color: white; font-weight: 600;">Тематика:</label>
-                <input class="form-control" id="theme" v-model="category" @keyup.enter="get_posts">
+                <input class="form-control" id="theme" v-model="category">
             </div>
         </div>
     </div>
@@ -79,11 +79,13 @@
         <div id="app">
             <div class="mt-1 p-2" v-for="post in posts"
                 style="border-bottom: #0f204e 1px solid;">
-                <div class="post-date">[[ post.posted ]]</div>
-                <a class="post-title" :href="'./post?source='+source+'&id='+post.id">[[ post.title ]]</a>
+                <div class="post-date">[[ post.posted.replace("T", " ") ]]</div>
+                <a class="post-title" :href="'./post/'+source+'/'+post.id">[[ post.title ]]</a>
                 <div class="post-text pl-3 mt-1">[[ post.annotation ]]</div>
                 <a :href="post.link" class="post-source mt-1 pl-3">Источник: [[ post.link ]]</a>
             </div>
+
+            <v-pagination link="./filter-changed" size="10"></v-pagination>
         </div>
     </div>
     

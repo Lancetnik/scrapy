@@ -1,22 +1,38 @@
 from loguru import logger
+
 from django.shortcuts import render
-from  django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 
-from .models import *
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer
+
+from .models import Habr
+from .serializers import HabrAnnotateSerializer, HabrDetailSerializer
+from .services import PostsFilter
 
 
-@csrf_exempt
-def get_posts(request):
-    response = [i.to_preview() for i in Habr.objects.all()]
-    return JsonResponse(response, safe=False)
+class PostsListView(generics.ListAPIView):
+    """ Выдача списка кратких постов для составления ленты """
+    serializer_class = HabrAnnotateSerializer
+    filter_backends = (DjangoFilterBackend, )
+    filterset_class = PostsFilter
+    
+    def get_queryset(self):
+        queryser = Habr.objects.all()
+        return queryser
 
-@csrf_exempt
-def goto_post(request):
-    response = ""
-    if request.GET['source'] == 'habr':
-        response = Habr.objects.filter(id=request.GET['id'])[0].to_dict()
-    return render(request, 'board/post.html', {'data': response})
+
+class PostDetailView(generics.RetrieveAPIView):
+    """ Выдача страницы с полным содержимым поста """
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request, source, pk):
+        post = Habr.objects.get(id=pk)
+        serializer = HabrDetailSerializer(post)
+
+        return Response({'data': serializer.data}, template_name='board/post.html')
+
 
 def main_render(request):
     return render(request, 'board/main.html')

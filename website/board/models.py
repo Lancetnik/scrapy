@@ -14,30 +14,8 @@ class Habr(models.Model):
     comments = ArrayField(models.IntegerField())
     datetime = ArrayField(models.DateTimeField())
 
-    def to_dict(self):
-        with open(f"../crawlers/posts/habr/{self.id}.txt", 'r', encoding="utf8") as file:
-            return {
-                'id': self.id,
-                'link': self.link,
-                'title': self.title,
-                'posted': str(self.posted),
-                'tags': self.tags,
-                'likes': self.likes,
-                'bookmarks': self.bookmarks,
-                'comments': self.comments,
-                'datetime': self.datetime,
-                'text': file.read()
-            }
-
-    def to_preview(self):
-        with open(f"../crawlers/posts/habr/{self.id}.txt", 'r', encoding="utf8") as file:
-            return {
-                'id': self.id,
-                'link': self.link,
-                'title': self.title,
-                'posted': str(self.posted),
-                'annotation': file.read()[:300]+'...'
-            }
+    def __repr__(self):
+        return f"{self.id} : {self.title}"
 
     class Meta:
         managed = False

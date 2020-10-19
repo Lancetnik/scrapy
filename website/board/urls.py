@@ -5,6 +5,6 @@ from .views import *
 
 urlpatterns = [
     path('', main_render),
-    path('filter-changed', get_posts),
-    path('post', goto_post)
+    path('filter-changed', PostsListView.as_view()),
+    path('post/<str:source>/<int:pk>', PostDetailView.as_view())
 ]
