@@ -19,7 +19,6 @@ class PostgresPipeline():
         self.cur.close()
         self.connection.close()
 
-    @logger.catch
     def process_item(self, item, spider):
         self.cur.execute(
             sql.SQL("select * from {} where id = (%s)")

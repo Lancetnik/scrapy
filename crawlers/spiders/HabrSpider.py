@@ -1,57 +1,50 @@
-from datetime import datetime, timedelta
+import re
 
-from bs4 import BeautifulSoup as BS
 from loguru import logger
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
-from crawlers.items import HabrPostItem
+from .item_parser import parse_item
 
 
-class HabrSpider(CrawlSpider):
-    name = 'habr'
-    allowed_domains = ['habr.com']
+scrapers = {
+    'habr': {
+        'url': 'https://habr.com/ru/',
+        'pagination_css': "a.toggle-menu__item-link_pagination",
+        'post_css': "a.post__title_link",
 
+        'post_title': 'span.post__title-text::text',
+        'post_likes': 'span.voting-wjt__counter::text',
+        'post_bookmarks': 'span.bookmark__counter::text',
+        'post_views': 'span.post-stats__views-count::text',
+        'post_comments': 'span.post-stats__comments-count::text',
+        'post_date': 'span.post__time::text',
+        'post_tags': 'a.inline-list__item-link::text',
+        'post_text': 'div.post__body_full'
+    }
+}
 
-    def start_requests(self):
-        yield scrapy.Request(url='https://habr.com/ru/')
+def construct_crawler(params):
+    url = params.get('url')
+    allowed_domains = [re.search(r'https://.*?/', url)[0].split('/')[-2]]
+    name = allowed_domains[0].split('.')[0]
 
     rules = (
-        Rule(LinkExtractor(restrict_css ='a.toggle-menu__item-link_pagination'), follow=True),
-        Rule(LinkExtractor(restrict_xpaths="//h2[@class='post__title']/a"), follow=True, callback='parse_item'),
+        Rule(LinkExtractor(restrict_css = params.get('pagination_css')), follow=True),
+        Rule(LinkExtractor(restrict_css = params.get('post_css')), follow=True, callback='parse_item')
     )
 
-    def parse_item(self, response):
-        Item = HabrPostItem()
+    params['rules'] = rules
+    params['allowed_domains'] = allowed_domains
+    params['name'] = name
+    params['parse_item'] = parse_item
 
-        Item['title'] = response.css('span.post__title-text::text').get()
-        Item['link'] = response.url
-        Item['id'] = response.url.split('/')[-2]
+    def start_requests(self):
+        yield scrapy.Request(url=self.url)
+    params['start_requests'] = start_requests
 
-        Item['likes'] = int(response.css('span.voting-wjt__counter::text').get().lstrip('+'))
-        Item['bookmarks'] = int(response.css('span.bookmark__counter::text').get())
+    return type(name, (CrawlSpider, ), params)
 
-        views = response.css('span.post-stats__views-count::text').get()
-        Item['views'] = int(float(views.replace('k', '').replace(',', '.')) * 1000) if 'k' in views else int(views)
 
-        Item['comments'] = int(response.css('span.post-stats__comments-count::text').get() or 0)
-
-        Item['datetime'] = datetime.now().replace(second=0, microsecond=0)
-
-        posted = response.css('span.post__time::text').get()
-        if 'вчера' in posted:
-            posted = posted.replace('вчера в ', '').split(':')
-            now = datetime.now()
-            yesterday = now - timedelta(days=1)
-            Item['posted'] = now.replace(day=yesterday.day, hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
-        if 'сегодня' in posted:
-            posted = posted.replace('сегодня в ', '').split(':')
-            now = datetime.now()
-            Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
-        
-        Item['text'] = BS(response.xpath('//*[@id="post-content-body"]').get(), features="lxml").text
-        Item['tags'] = list(set(i.strip() for i in response.css('a.inline-list__item-link::text').getall()))
-
-        yield Item
-
+a = construct_crawler(scrapers.get('habr'))

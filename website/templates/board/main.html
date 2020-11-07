@@ -82,10 +82,10 @@
                 <div class="post-date">[[ post.posted.replace("T", " ") ]]</div>
                 <a class="post-title" :href="'./post/'+source+'/'+post.id">[[ post.title ]]</a>
                 <div class="post-text pl-3 mt-1">[[ post.annotation ]]</div>
-                <a :href="post.link" class="post-source mt-1 pl-3">Источник: [[ post.link ]]</a>
+                <a :href="post.link" class="post-source mt-1 pl-3" target="_blank">Источник: [[ post.link ]]</a>
             </div>
 
-            <v-pagination link="./filter-changed" size="10"></v-pagination>
+            <v-pagination link="./filter-changed" :size="10"></v-pagination>
         </div>
     </div>
     
