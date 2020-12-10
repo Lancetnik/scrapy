@@ -1,6 +1,5 @@
 import re
 
-from loguru import logger
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
