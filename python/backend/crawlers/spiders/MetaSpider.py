@@ -6,12 +6,13 @@ from scrapy.spiders import CrawlSpider, Rule
 
 from .core.item_parser import parse_item
 from .core.ConstructorData import Scrapers
+from .core.services import extract_domain
 
 
 def construct_crawler(params):
     url = params.get('url')
-    allowed_domains = [re.search(r'https://.*?/', url)[0].split('/')[-2]]
-    name = allowed_domains[0].split('.')[0]
+    allowed_domains = extract_domain(url)
+    name = allowed_domains.split('.')[0]
 
     rules = (
         Rule(LinkExtractor(restrict_css = params.get('pagination_css')), follow=True),

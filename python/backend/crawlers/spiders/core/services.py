@@ -1,3 +1,5 @@
+import re
+
 from datetime import datetime
 
 
@@ -23,3 +25,6 @@ def to_datetime(date: str) -> datetime:
     hours=date[-1].split(':')
     response = datetime(year, month, day, int(hours[0]), int(hours[1]))
     return response
+
+def extract_domain(url: str) -> str:
+    return [re.search(r'https://.*?/', url)[0].split('/')[-2]][0]

@@ -11,7 +11,7 @@ class PostgresPipeline():
         logger.debug(f'Run spider: {spider}')
 
     def close_spider(self, spider):
-        pass
+        logger.debug(f'{spider} finished')
     
     def process_item(self, item, spider):
         h = HabrModel.objects.get_or_create(link=item['link'], title=item['title'], posted=item['posted'])
