@@ -2,13 +2,13 @@ from datetime import datetime, timedelta
 
 from bs4 import BeautifulSoup as BS
 
-from crawlers.items import HabrPostItem
+from crawlers.items import PostItem
 from .services import to_datetime
 
 
 def parse_item(self, response):
-    Item = HabrPostItem()
-
+    Item = PostItem()
+    
     Item['title'] = response.css(self.post_title).get()
     Item['link'] = response.url
     Item['id'] = response.url.split('/')[-2]

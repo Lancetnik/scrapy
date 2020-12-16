@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def _month_to_int(month: str):
     if month=='января': return 1
     if month=='февраля': return 2

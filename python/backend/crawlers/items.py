@@ -1,7 +1,7 @@
 from scrapy.item import Item, Field
 
 
-class HabrPostItem(Item):
+class PostItem(Item):
     id = Field()
     title = Field()
     link = Field()

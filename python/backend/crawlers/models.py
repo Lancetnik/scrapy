@@ -1,6 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from django.conf import settings
+
 
 class HabrModel(models.Model):
     link = models.URLField(unique=True)
@@ -13,27 +15,27 @@ class HabrModel(models.Model):
 
     likes = ArrayField(
             models.IntegerField(blank=True),
-            size=10, blank=True, null=True,
+            size=settings.PARSER_COUNTER, blank=True, null=True,
             default = list()
         )
     bookmarks = ArrayField(
             models.IntegerField(blank=True),
-            size=10, blank=True, null=True,
+            size=settings.PARSER_COUNTER, blank=True, null=True,
             default = list()
         )
     views = ArrayField(
             models.IntegerField(blank=True),
-            size=10, blank=True, null=True,
+            size=settings.PARSER_COUNTER, blank=True, null=True,
             default = list()
         )
     comments = ArrayField(
             models.IntegerField(blank=True),
-            size=10, blank=True, null=True,
+            size=settings.PARSER_COUNTER, blank=True, null=True,
             default = list()
         )
     datetime = ArrayField(
             models.DateTimeField(),
-            size=10, blank=True, null=True,
+            size=settings.PARSER_COUNTER, blank=True, null=True,
             default = list()
         )
 
