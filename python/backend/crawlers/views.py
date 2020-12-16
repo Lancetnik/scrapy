@@ -12,25 +12,26 @@ from twisted.internet.error import ReactorAlreadyRunning
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from .models import HabrModel
-from .filters import HabrFilter
+from .models import PostModel
+from .filters import PostFilter
 from .spiders.core.ConstructorData import Scrapers
-from .serializers import HabrSerializer, RunnerSerializer, ConstructSpiderSerialiser
+from .spiders.core.services import extract_domain
+from .serializers import PostSerializer, RunnerSerializer, ConstructSpiderSerialiser
 
 
 process = CrawlerProcess(get_project_settings())
 
 
 class HabrListView(generics.ListAPIView):
-    queryset = HabrModel.objects.all()
-    serializer_class = HabrSerializer
+    queryset = PostModel.objects.all()
+    serializer_class = PostSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = HabrFilter
+    filterset_class = PostFilter
     
 
 class HabrRetrieveView(generics.RetrieveAPIView):
-    queryset = HabrModel.objects.all()
-    serializer_class = HabrSerializer
+    queryset = PostModel.objects.all()
+    serializer_class = PostSerializer
 
 
 class StartCrawlerView(APIView):
@@ -42,9 +43,9 @@ class StartCrawlerView(APIView):
             if 'query' in name:
                 post_id = request.data.get('post_id')
                 if post_id:
-                    urls = [HabrModel.objects.get(pk=post_id).link]
+                    urls = [PostModel.objects.get(pk=post_id).link]
                 else:
-                    urls = [i.link for i in HabrModel.objects.filter(datetime__len__lt = 10)]
+                    urls = [i.link for i in PostModel.objects.filter(datetime__len__lt = 10)]
                 process.crawl(
                     name,
                     start_urls=urls
@@ -56,16 +57,17 @@ class StartCrawlerView(APIView):
                     return Response({'Error': 'Url field is required'}, status=status.HTTP_400_BAD_REQUEST)
                 process.crawl(
                     name,
-                    start_urls=urls
+                    start_urls=urls,
+                    allowed_domains=[extract_domain(urls[0])]
                 )
-
+                
             else:
                 process.crawl(name)
                 
             p = Process(target=process.start(stop_after_crawl=False))
             p.start()
         except ReactorAlreadyRunning: pass
-        except HabrModel.DoesNotExist: 
+        except PostModel.DoesNotExist: 
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_200_OK)
 

@@ -1,9 +1,9 @@
 from django_filters import rest_framework as filters
 
-from .models import HabrModel
+from .models import PostModel
 
 
-class HabrFilter(filters.FilterSet):
+class PostFilter(filters.FilterSet):
     class Meta:
-        model = HabrModel
+        model = PostModel
         fields = ['title', 'link']

@@ -1,19 +1,19 @@
 from rest_framework import serializers
 
-from .models import HabrModel
+from .models import PostModel
 from .spiders.core.ConstructorData import Scrapers
 
 
-class HabrSerializer(serializers.ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HabrModel
+        model = PostModel
         fields = '__all__'
 
 
 class RunnerSerializer(serializers.Serializer):
     spider_name = serializers.CharField(max_length=50)
     post_id = serializers.IntegerField(required=False)
-    url = serializers.CharField(max_length=100)
+    url = serializers.CharField(max_length=100, required=False)
 
 
 fields = {i: serializers.CharField(max_length=20) for i in Scrapers.required_fields}

@@ -3,7 +3,8 @@ import copy
 from loguru import logger
 
 from django.conf import settings
-from .models import HabrModel
+from .models import PostModel
+from .spiders.core.services import extract_domain
 
 
 class PostgresPipeline():
@@ -14,7 +15,11 @@ class PostgresPipeline():
         logger.debug(f'{spider} finished')
     
     def process_item(self, item, spider):
-        h = HabrModel.objects.get_or_create(link=item['link'], title=item['title'], posted=item['posted'])
+        source = extract_domain(item['link'])
+        h = PostModel.objects.get_or_create(
+            link=item['link'], title=item['title'],
+            posted=item['posted'], source=source
+        )
         model, isCreated = copy.deepcopy(h[0]), h[1]
         if isCreated: 
             model.tags=item['tags']

@@ -4,7 +4,7 @@ from django.db import models
 from django.conf import settings
 
 
-class HabrModel(models.Model):
+class PostModel(models.Model):
     link = models.URLField(unique=True)
     title = models.TextField()
     posted = models.DateTimeField()

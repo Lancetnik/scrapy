@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import HabrModel
+from .models import PostModel
 
 
-admin.site.register(HabrModel)
+admin.site.register(PostModel)
