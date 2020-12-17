@@ -8,6 +8,7 @@ class PostModel(models.Model):
     link = models.URLField(unique=True)
     title = models.TextField()
     posted = models.DateTimeField()
+    source = models.TextField()
     tags = ArrayField(
             models.CharField(max_length=30, blank=True),
             blank=True, null=True

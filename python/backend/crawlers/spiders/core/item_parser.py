@@ -8,7 +8,7 @@ from .services import to_datetime
 
 def parse_item(self, response):
     Item = PostItem()
-    
+
     Item['title'] = response.css(self.post_title).get()
     Item['link'] = response.url
     Item['id'] = response.url.split('/')[-2]
@@ -40,5 +40,5 @@ def parse_item(self, response):
     
     Item['text'] = BS(response.css(self.post_text).get(), features="lxml").text
     Item['tags'] = list(set(i.strip() for i in response.css(self.post_tags).getall()))
-
+    
     yield Item

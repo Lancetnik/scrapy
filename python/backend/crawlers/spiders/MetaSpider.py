@@ -1,5 +1,3 @@
-import re
-
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
@@ -11,8 +9,8 @@ from .core.services import extract_domain
 
 def construct_crawler(params):
     url = params.get('url')
-    allowed_domains = extract_domain(url)
-    name = allowed_domains.split('.')[0]
+    allowed_domains = [extract_domain(url)] # list with 1 element. Important
+    name = allowed_domains[0].split('.')[0]
 
     rules = (
         Rule(LinkExtractor(restrict_css = params.get('pagination_css')), follow=True),
@@ -32,4 +30,4 @@ def construct_crawler(params):
 
 
 for i in Scrapers.rules.keys():
-    exec(f'str_{i} = construct_crawler(Scrapers.get("{i}"))')
+    exec(f'{i} = construct_crawler(Scrapers.get("{i}"))')
