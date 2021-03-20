@@ -6,4 +6,4 @@ from .models import PostModel
 class PostFilter(filters.FilterSet):
     class Meta:
         model = PostModel
-        fields = ['title', 'link']
+        fields = ['title', 'link', 'source']

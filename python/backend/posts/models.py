@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 class PostModel(models.Model):
-    link = models.URLField(unique=True)
+    link = models.TextField(unique=True)
     title = models.TextField()
     posted = models.DateTimeField()
     source = models.TextField()

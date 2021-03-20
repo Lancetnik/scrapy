@@ -26,6 +26,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
    path('crawl/', include('crawlers.urls')),
+   path('post/', include('posts.urls')),
 
    path('admin/', admin.site.urls),
    path('api/', include('rest_framework.urls')),

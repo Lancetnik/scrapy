@@ -7,7 +7,7 @@ from .core.ConstructorData import Scrapers
 
 def construct_crawler(params):
     url = params.get('url')
-    allowed_domains = [extract_domain(url)]
+    allowed_domains = [extract_domain(url)] # list with 1 element. Important
     name = "query_" + allowed_domains[0].split('.')[0]
 
     params['parse'] = item_parser.parse_item
@@ -18,4 +18,4 @@ def construct_crawler(params):
 
 
 for i in Scrapers.rules.keys():
-    exec(f'str_{i} = construct_crawler(Scrapers.get("{i}"))')
+    exec(f'query_{i} = construct_crawler(Scrapers.get("{i}"))')

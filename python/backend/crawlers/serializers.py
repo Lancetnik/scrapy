@@ -1,13 +1,6 @@
 from rest_framework import serializers
 
-from .models import PostModel
 from .spiders.core.ConstructorData import Scrapers
-
-
-class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostModel
-        fields = '__all__'
 
 
 class RunnerSerializer(serializers.Serializer):

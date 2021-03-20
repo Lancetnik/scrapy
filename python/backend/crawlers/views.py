@@ -12,31 +12,21 @@ from twisted.internet.error import ReactorAlreadyRunning
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from .models import PostModel
-from .filters import PostFilter
+from posts.models import PostModel
+from posts.filters import PostFilter
+from posts.serializers import PostSerializer
+
+from .serializers import RunnerSerializer, ConstructSpiderSerialiser
 from .spiders.core.ConstructorData import Scrapers
 from .spiders.core.services import extract_domain
-from .serializers import PostSerializer, RunnerSerializer, ConstructSpiderSerialiser
 
 
 process = CrawlerProcess(get_project_settings())
 
 
-class HabrListView(generics.ListAPIView):
-    queryset = PostModel.objects.all()
-    serializer_class = PostSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = PostFilter
-    
-
-class HabrRetrieveView(generics.RetrieveAPIView):
-    queryset = PostModel.objects.all()
-    serializer_class = PostSerializer
-
-
 class StartCrawlerView(APIView):
     serializer_class = RunnerSerializer
-
+    
     def post(self, request):
         name = request.data['spider_name']
         try:

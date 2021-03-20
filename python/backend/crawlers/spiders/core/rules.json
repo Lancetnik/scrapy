@@ -1,15 +1,169 @@
 {
     "habr": {
         "url": "https://habr.com/ru/",
-        "pagination_css": "a.toggle-menu__item-link_pagination",
-        "post_css": "a.post__title_link",
-        "post_title": "span.post__title-text::text",
-        "post_likes": "span.voting-wjt__counter::text",
-        "post_bookmarks": "span.bookmark__counter::text",
-        "post_views": "span.post-stats__views-count::text",
-        "post_comments": "span.post-stats__comments-count::text",
-        "post_date": "span.post__time::text",
-        "post_tags": "a.inline-list__item-link::text",
-        "post_text": "div.post__body_full"
+        "post_css": {
+            "type": "css",
+            "path": "a.post__title_link"
+        },
+        "pagination_css": {
+            "type": "css",
+            "path": "a.toggle-menu__item-link_pagination"
+        },
+        "post_title": {
+            "type": "css",
+            "path": "span.post__title-text::text"
+        },
+        "post_likes": {
+            "type": "css",
+            "path": "span.voting-wjt__counter::text"
+        },
+        "post_bookmarks": {
+            "type": "css",
+            "path": "span.bookmark__counter::text"
+        },
+        "post_views": {
+            "type": "css",
+            "path": "span.post-stats__views-count::text"
+        },
+        "post_comments": {
+            "type": "css",
+            "path": "span.post-stats__comments-count::text"
+        },
+        "post_date": {
+            "type": "css",
+            "path": "span.post__time::text"
+        },
+        "post_tags": {
+            "type": "css",
+            "path": "a.inline-list__item-link::text"
+        },
+        "post_text": {
+            "type": "css",
+            "path": "div.post__body_full"
+        }
+    },
+
+    "kaspersky": {
+        "url": "https://www.kaspersky.ru/blog/category/news/",
+        "post_css": {
+            "type": "css",
+            "path": "h3.c-card__title"
+        },
+        "pagination_css": {
+            "type": "css",
+            "path": "li.c-pagination__item--next"
+        },
+        "post_title": {
+            "type": "css",
+            "path": "h1.c-article__title::text"
+        },
+        "post_date": {
+            "type": "xpath",
+            "path": "//time//text()"
+        },
+        "post_tags": {
+            "type": "xpath",
+            "path": "//ul[contains(@class, 'c-taxonomy--tags')]//a//text()"
+        },
+        "post_text": {
+            "type": "css",
+            "path": "div.c-article__body"
+        }
+    },
+
+    "fstec": {
+        "url": "https://fstec.ru/",
+        "post_css": {
+            "type": "xpath",
+            "path": "//h2[@class='item-title']/a"
+        },
+        "pagination_css": {
+            "type": "xpath",
+            "path": "//a[@class='pagenav']"
+        },
+        "post_title": {
+            "type": "xpath",
+            "path": "//div[@class='page-header']/h2/text()"
+        },
+        "post_date": {
+            "type": "xpath",
+            "path": "//time[@itemprop='dateCreated']//text()"
+        },
+        "post_date_modified": {
+            "type": "xpath",
+            "path": "//time[@itemprop='dateModified']//text()"
+        },
+        "post_likes": {
+            "type": "css",
+            "path": "span.lc::text"
+        },
+        "post_unlikes": {
+            "type": "css",
+            "path": "span.unlc::text"
+        },
+        "post_views": {
+            "type": "xpath",
+            "path": "//dd[@class='hits']/meta/@content"
+        },
+        "post_tags": {
+            "type": "xpath",
+            "path": "//ul[@class='tags inline']/li/a/text()"
+        },
+        "post_text": {
+            "type": "xpath",
+            "path": "//div[@itemprop='articleBody']"
+        }
+    },
+
+    "securitylab": {
+        "url": "https://www.securitylab.ru/news/",
+        "pagination_css": {
+            "type": "css",
+            "path": "a.page-next"
+        },
+        "post_css": {
+            "type": "css",
+            "path": "a.article-card"
+        },
+        "post_title": {
+            "type": "css",
+            "path": "h1.page-title::text"
+        },
+        "post_tags": {
+            "type": "xpath",
+            "path": "//div[@class='article-tags']/a/text()"
+        },
+        "post_date": {
+            "type": "xpath",
+            "path": "//time/@datetime"
+        },
+        "post_text": {
+            "type": "css",
+            "path": "div.articl-text"
+        }
+    },
+
+    "itsec": {
+        "url": "https://www.itsec.ru/news/all",
+        "post_css": {
+            "type": "xpath",
+            "path": "//h2[@class='post-simple-title']/a"
+        },
+        "post_title": {
+            "type": "css",
+            "path": "span.hs_cos_wrapper_type_text::text"
+        },
+        "post_date": {
+            "type": "xpath",
+            "path": "//div[@class='post-body']/p/text()"
+        },
+        "post_text": {
+            "type": "css",
+            "path": "div.clear"
+        },
+        "post_tags": {
+            "type": "xpath",
+            "path": "//div[@class='post-bottom']/a/text()"
+        }
     }
 }

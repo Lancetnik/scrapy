@@ -5,6 +5,7 @@ import json
 
 
 RULES_PATH = Path(__file__).parent.joinpath('rules.json')
+REQUIRED_FIELDS = {'name', 'url', 'post_css'}
 
 
 def add_required_arguments(func):
@@ -21,7 +22,7 @@ class Scrapers(ABC):
     with open(RULES_PATH) as j:
         rules = json.load(j)
 
-    required_fields = {'name', 'url', 'post_css'}
+    required_fields = REQUIRED_FIELDS
     fields = set.union(*[set(j.keys()) for j in rules.values()]) - required_fields
 
     @classmethod

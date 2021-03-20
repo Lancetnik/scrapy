@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'drfauto',
 
     'crawlers',
+    'posts',
 ]
 
 REST_FRAMEWORK = {
