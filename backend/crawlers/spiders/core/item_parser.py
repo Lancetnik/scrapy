@@ -1,11 +1,6 @@
-from datetime import datetime, timedelta
-
-from bs4 import BeautifulSoup as BS
+from datetime import datetime
 
 from crawlers.items import PostItem
-from posts.annotation import get_popular_words, lemmatize
-
-from .services import to_datetime
 
 
 def parse_item(self, response):
@@ -20,48 +15,12 @@ def parse_item(self, response):
     Item['bookmarks'] = int(_get_token(response, dictionary, 'post_bookmarks') or 0)
     Item['comments'] = int(_get_token(response, dictionary, 'post_comments') or 0)
 
-    views = _get_token(response, dictionary, 'post_views')
-    if views:
-        views = views.lstrip('UserPageVisits:')
-        Item['views'] = int(float(views.replace('k', '').replace(',', '.')) * 1000) if 'k' in views else int(views)
-
-    likes = _get_token(response, dictionary, 'post_likes')
-    if likes:
-        likes = likes.lstrip('+').strip()
-        likes = likes.replace('–', '-')
-        Item['likes'] = int(likes)
-
-    unlikes = _get_token(response, dictionary, 'post_unlikes')
-    if unlikes:
-        unlikes = unlikes.lstrip('-').strip()
-        Item['likes'] -= int(unlikes)
-
-    text = _get_token(response, dictionary, 'post_text')
-    if text: Item['text'] = BS(text, features="lxml").text
-
-    words = list(set(get_popular_words(Item['text'])))
-    tags = _get_all_tokens(response, dictionary, 'post_tags')
-    if tags: words += list(set(i.strip().lower() for i in tags))
-    Item['tags'] = words
-
-    posted = _get_token(response, dictionary, 'post_date_modified') or _get_token(response, dictionary, 'post_date')
-    if posted:
-        try:
-            Item['posted'] = datetime.strptime(posted, "%Y-%m-%dT%H:%M:%S%z")
-        except Exception:
-            posted = posted.replace('Создано: ', '')
-            posted = posted.replace('Обновлено: ', '')
-            if 'вчера' in posted.lower():
-                posted = posted.replace('вчера в ', '').split(':')
-                now = datetime.now()
-                yesterday = now - timedelta(days=1)
-                Item['posted'] = now.replace(day=yesterday.day, hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
-            elif 'сегодня' in posted.lower():
-                posted = posted.replace('сегодня в ', '').split(':')
-                now = datetime.now()
-                Item['posted'] = now.replace(hour=int(posted[0]), minute=int(posted[1]), second=0, microsecond=0)
-            else:
-                Item['posted'] = to_datetime(posted)
+    Item['views']  = _get_token(response, dictionary, 'post_views')
+    Item['likes'] = _get_token(response, dictionary, 'post_likes')
+    Item['unlikes'] = _get_token(response, dictionary, 'post_unlikes')
+    Item['text']  = _get_token(response, dictionary, 'post_text')
+    Item['tags'] = _get_all_tokens(response, dictionary, 'post_tags')
+    Item['posted'] = _get_token(response, dictionary, 'post_date_modified') or _get_token(response, dictionary, 'post_date')
 
     yield Item
     

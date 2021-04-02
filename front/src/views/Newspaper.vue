@@ -2,7 +2,7 @@
   <v-app style="background: #ffffff">
     <Sidebar/>
 
-    <v-main style="padding-left: 330px">
+    <v-main style="padding-left: 330px; background-color: #C5CAE9">
       <div class="px-3">
         <Pagination :size='10' :link='`${this.$store.state.backendUrl}/post/`' 
           v-model="posts" :edges_size="2" active_class='btn-my' non_active_class='btn-light'/>
@@ -25,7 +25,13 @@
                 Закрыть
               </v-btn>
             </v-row>
-            <div class="mt-2" v-text="cur_post_data.text"></div>
+
+            <span v-for='tag in cur_post_data.tags' :key="tag"><v-chip
+              class="mx-2 my-1"
+              color='#AB47BC'
+              dark
+            >{{tag}}</v-chip></span>
+            <div class="mt-2" v-html="cur_post_data.text"></div>
           </v-card>
         </div>
 
@@ -67,13 +73,21 @@ export default {
     select_post(index) {
       axios.get(`${this.$store.state.backendUrl}/post/${index}/`).then((response) => {
         this.cur_post_data = response.data
-        console.log(response.data)
       })
     }
   }
 }
 </script>
 
+
+<style>
+  img {
+    max-height: 400px !important;
+    width: auto;
+    height: 100%;
+    margin: 10px;
+  }
+</style>
 
 <style scoped>
 .post-title {
@@ -107,6 +121,11 @@ export default {
 }
 
 .post-source {
+    color: black;
+    font-weight: 500;
+}
+
+.post-source-nohover {
     color: black;
     font-weight: 500;
 }

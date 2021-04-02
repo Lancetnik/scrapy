@@ -9,6 +9,8 @@ from pymystem3 import Mystem
 
 import gensim
 
+from .models import PostModel
+
 
 m = Mystem()
 nltk.download('stopwords')
@@ -30,4 +32,10 @@ def get_popular_words(text: str, n=5):
 def summarize(text: str, sentences: int) -> str:
     gensim_summary = gensim.summarization.summarize(text)
     return '. '.join(gensim_summary.split('.')[:sentences]) + '.'
-    
+
+def lemmatize_db():
+    obs = PostModel.objects.all()
+    for ob in obs:
+        ob.tags = [i for i in lemmatize(ob.tags) if i]
+        print(ob.tags)
+        ob.save()

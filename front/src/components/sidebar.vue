@@ -1,5 +1,6 @@
 <template>
   <v-navigation-drawer
+    fixed
     absolute
     dark
     color='purple darken-2'
@@ -254,10 +255,6 @@ export default {
 
 <style scoped>
   .sidebar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
     border-top-right-radius: 40px;
     box-shadow: 2px 0px 20px rgba(134, 87, 233, 0.8);
   }

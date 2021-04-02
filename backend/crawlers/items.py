@@ -6,6 +6,7 @@ class PostItem(Item):
     title = Field()
     link = Field()
     likes = Field()
+    unlikes = Field()
     bookmarks = Field()
     views = Field()
     comments = Field()
